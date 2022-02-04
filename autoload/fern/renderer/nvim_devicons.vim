@@ -68,9 +68,9 @@ endfunction
 
 function! s:get_node_symbol(node) abort
   if a:node.status is# s:STATUS_NONE
-    let symbol = s:fetch_devicons(bufname)
+    let symbol = s:fetch_devicons(a:node.bufname)
   elseif a:node.status is# s:STATUS_COLLAPSED
-    let symbol = s:fetch_devicons(bufname)
+    let symbol = s:fetch_devicons(a:node.bufname)
   else
     let symbol = ' '
   endif
