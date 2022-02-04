@@ -68,7 +68,7 @@ endfunction
 
 function! s:get_node_symbol(node) abort
   if a:node.status is# s:STATUS_NONE
-    let symbol = luaeval("require'nvim-web-devicons'.get_icon(_A[1],_A[2])",[a:node.bufname, fnamemodify(a:node.bufname, ":e")])
+    let symbol = luaeval("require'nvim-web-devicons'.get_icon(_A[1],_A[2])",[a:node.label, fnamemodify(a:node.bufname, ":e")])
     if symbol == 'null'
       let symbol = ''
     endif
