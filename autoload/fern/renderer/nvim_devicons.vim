@@ -7,10 +7,10 @@ let s:AsyncLambda = vital#fern#import('Async.Lambda')
 let s:STATUS_NONE = g:fern#STATUS_NONE
 let s:STATUS_COLLAPSED = g:fern#STATUS_COLLAPSED
 
-function! fern#renderer#devicons#new() abort
+function! fern#renderer#nvim_devicons#new() abort
   let default = fern#renderer#default#new()
-  if !exists('*WebDevIconsGetFileTypeSymbol')
-    call fern#logger#error("WebDevIconsGetFileTypeSymbol is not found. 'devicons' renderer requires 'ryanoasis/vim-devicons'.")
+  if !exists('g:nvim_web_devicons')
+    call fern#logger#error("g:nvim_web_devicons not found. 'nvim_devicons' renderer requires 'kyazdani42/nvim-web-devicons'.")
     return default
   endif
   return extend(copy(default), {
@@ -22,10 +22,10 @@ endfunction
 
 function! s:render(nodes) abort
   let options = {
-        \ 'leading': g:fern#renderer#devicons#leading,
+        \ 'leading': g:fern#renderer#nvim_devicons#leading,
         \}
   let base = len(a:nodes[0].__key)
-  let Profile = fern#profile#start('fern#renderer#devicons#s:render')
+  let Profile = fern#profile#start('fern#renderer#nvim_devicons#s:render')
   return s:AsyncLambda.map(copy(a:nodes), { v, -> s:render_node(v, base, options) })
         \.finally({ -> Profile() })
 endfunction
@@ -68,13 +68,17 @@ endfunction
 
 function! s:get_node_symbol(node) abort
   if a:node.status is# s:STATUS_NONE
-    let symbol = WebDevIconsGetFileTypeSymbol(a:node.bufname, 0)
+    let symbol = s:fetch_devicons(bufname)
   elseif a:node.status is# s:STATUS_COLLAPSED
-    let symbol = WebDevIconsGetFileTypeSymbol(a:node.bufname, 1)
+    let symbol = s:fetch_devicons(bufname)
   else
-    let symbol = g:DevIconsDefaultFolderOpenSymbol
+    let symbol = ' '
   endif
   return symbol . '  '
+endfunction
+
+function! s:fetch_devicons(bufname) abort
+  return luaeval("require'nvim-web-devicons'.get_icon(_A[1],_A[2])",[a:bufname, fnamemodify(a:bufname, ":e")])
 endfunction
 
 call s:Config.config(expand('<sfile>:p'), {
