@@ -77,7 +77,7 @@ function! s:get_node_symbol(node) abort
   else
     let symbol = ''
   endif
-  return symbol . '  '
+  return symbol . ' '
 endfunction
 
 call s:Config.config(expand('<sfile>:p'), {
