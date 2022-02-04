@@ -68,17 +68,16 @@ endfunction
 
 function! s:get_node_symbol(node) abort
   if a:node.status is# s:STATUS_NONE
-    let symbol = s:fetch_devicons(a:node.bufname)
+    let symbol = luaeval("require'nvim-web-devicons'.get_icon(_A[1],_A[2])",[a:bufname, fnamemodify(a:bufname, ":e")])
+    if symbol == 'null'
+      let symbol = ''
+    endif
   elseif a:node.status is# s:STATUS_COLLAPSED
-    let symbol = s:fetch_devicons(a:node.bufname)
+    let symbol = ''
   else
-    let symbol = ' '
+    let symbol = ''
   endif
   return symbol . '  '
-endfunction
-
-function! s:fetch_devicons(bufname) abort
-  return luaeval("require'nvim-web-devicons'.get_icon(_A[1],_A[2])",[a:bufname, fnamemodify(a:bufname, ":e")])
 endfunction
 
 call s:Config.config(expand('<sfile>:p'), {
