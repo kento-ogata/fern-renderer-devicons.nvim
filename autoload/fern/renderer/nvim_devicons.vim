@@ -23,10 +23,10 @@ endfunction
 function! s:render(nodes) abort
   let options = {
         \ 'leading': g:fern#renderer#nvim_devicons#leading,
-        \ 'root_symbol': g:fern#renderer#default#root_symbol,
-        \ 'leaf_symbol': g:fern#renderer#default#leaf_symbol,
-        \ 'expanded_symbol': g:fern#renderer#default#expanded_symbol,
-        \ 'collapsed_symbol': g:fern#renderer#default#collapsed_symbol,
+        \ 'root_symbol': g:fern#renderer#nvim_devicons#root_symbol,
+        \ 'leaf_symbol': g:fern#renderer#nvim_devicons#leaf_symbol,
+        \ 'expanded_symbol': g:fern#renderer#nvim_devicons#expanded_symbol,
+        \ 'collapsed_symbol': g:fern#renderer#nvim_devicons#collapsed_symbol,
         \}
   let base = len(a:nodes[0].__key)
   let Profile = fern#profile#start('fern#renderer#nvim_devicons#s:render')
@@ -35,13 +35,24 @@ function! s:render(nodes) abort
 endfunction
 
 function! s:syntax() abort
-  syntax match FernLeaf   /^\s*\zs.*[^/].*$/ transparent contains=FernLeafSymbol
-  syntax match FernBranch /^\s*\zs.*\/.*$/   transparent contains=FernBranchSymbol
-  syntax match FernRoot   /\%1l.*/     transparent contains=FernRootText
-
-  syntax match FernLeafSymbol   /. / contained nextgroup=FernLeafText
-  syntax match FernBranchSymbol /. / contained nextgroup=FernBranchText
-
+  syntax match FernLeaf   /^.*[^/].*$/ transparent contains=FernLeafSymbol
+  syntax match FernBranch /^.*\/.*$/   transparent contains=FernBranchSymbol
+  syntax match FernRoot   /\%1l.*/       transparent contains=FernRootText
+  execute printf(
+        \ 'syntax match FernRootSymbol /%s/ contained nextgroup=FernRootText',
+        \ escape(g:fern#renderer#nvim_devicons#root_symbol, s:ESCAPE_PATTERN),
+        \)
+  execute printf(
+        \ 'syntax match FernLeafSymbol /^\%%(%s\)*%s/ contained nextgroup=FernLeafText',
+        \ escape(g:fern#renderer#nvim_devicons#leading, s:ESCAPE_PATTERN),
+        \ escape(g:fern#renderer#nvim_devicons#leaf_symbol, s:ESCAPE_PATTERN),
+        \)
+  execute printf(
+        \ 'syntax match FernBranchSymbol /^\%%(%s\)*\%%(%s\|%s\)/ contained nextgroup=FernBranchText',
+        \ escape(g:fern#renderer#nvim_devicons#leading, s:ESCAPE_PATTERN),
+        \ escape(g:fern#renderer#nvim_devicons#collapsed_symbol, s:ESCAPE_PATTERN),
+        \ escape(g:fern#renderer#nvim_devicons#expanded_symbol, s:ESCAPE_PATTERN),
+        \)
   syntax match FernRootText   /.*\ze.*$/ contained nextgroup=FernBadgeSep
   syntax match FernLeafText   /.*\ze.*$/ contained nextgroup=FernBadgeSep
   syntax match FernBranchText /.*\ze.*$/ contained nextgroup=FernBadgeSep
