@@ -40,18 +40,18 @@ function! s:syntax() abort
   syntax match FernRoot   /\%1l.*/       transparent contains=FernRootText
   execute printf(
         \ 'syntax match FernRootSymbol /%s/ contained nextgroup=FernRootText',
-        \ escape(g:fern#renderer#nvim_devicons#root_symbol, s:ESCAPE_PATTERN),
+        \ escape(g:fern#renderer#nvim_devicons#root_symbol, s:PATTERN),
         \)
   execute printf(
         \ 'syntax match FernLeafSymbol /^\%%(%s\)*%s/ contained nextgroup=FernLeafText',
-        \ escape(g:fern#renderer#nvim_devicons#leading, s:ESCAPE_PATTERN),
-        \ escape(g:fern#renderer#nvim_devicons#leaf_symbol, s:ESCAPE_PATTERN),
+        \ escape(g:fern#renderer#nvim_devicons#leading, s:PATTERN),
+        \ escape(g:fern#renderer#nvim_devicons#leaf_symbol, s:PATTERN),
         \)
   execute printf(
         \ 'syntax match FernBranchSymbol /^\%%(%s\)*\%%(%s\|%s\)/ contained nextgroup=FernBranchText',
-        \ escape(g:fern#renderer#nvim_devicons#leading, s:ESCAPE_PATTERN),
-        \ escape(g:fern#renderer#nvim_devicons#collapsed_symbol, s:ESCAPE_PATTERN),
-        \ escape(g:fern#renderer#nvim_devicons#expanded_symbol, s:ESCAPE_PATTERN),
+        \ escape(g:fern#renderer#nvim_devicons#leading, s:PATTERN),
+        \ escape(g:fern#renderer#nvim_devicons#collapsed_symbol, s:PATTERN),
+        \ escape(g:fern#renderer#nvim_devicons#expanded_symbol, s:PATTERN),
         \)
   syntax match FernRootText   /.*\ze.*$/ contained nextgroup=FernBadgeSep
   syntax match FernLeafText   /.*\ze.*$/ contained nextgroup=FernBadgeSep
