@@ -76,12 +76,12 @@ function! s:render_node(node, base, options) abort
     return a:options.root_symbol . a:node.label . suffix . '' . a:node.badge
   endif
   let leading = repeat(a:options.leading, level - 1)
-  let symbol = s:get_node_symbol(a:node)
+  let symbol = s:get_node_symbol(a:node, a:options)
   let suffix = a:node.status ? '/' : ''
   return leading . symbol . a:node.label . suffix . '' . a:node.badge
 endfunction
 
-function! s:get_node_symbol(node) abort
+function! s:get_node_symbol(node, options) abort
   if a:node.status is# s:STATUS_NONE
     let symbol = a:options.leaf_symbol . luaeval("require'nvim-web-devicons'.get_icon(_A[1],_A[2])",[a:node.label, fnamemodify(a:node.bufname, ":e")])
   elseif a:node.status is# s:STATUS_COLLAPSED
