@@ -23,6 +23,10 @@ endfunction
 function! s:render(nodes) abort
   let options = {
         \ 'leading': g:fern#renderer#nvim_devicons#leading,
+        \ 'root_symbol': g:fern#renderer#default#root_symbol,
+        \ 'leaf_symbol': g:fern#renderer#default#leaf_symbol,
+        \ 'expanded_symbol': g:fern#renderer#default#expanded_symbol,
+        \ 'collapsed_symbol': g:fern#renderer#default#collapsed_symbol,
         \}
   let base = len(a:nodes[0].__key)
   let Profile = fern#profile#start('fern#renderer#nvim_devicons#s:render')
@@ -58,7 +62,7 @@ function! s:render_node(node, base, options) abort
   let level = len(a:node.__key) - a:base
   if level is# 0
     let suffix = a:node.label =~# '/$' ? '' : '/'
-    return a:node.label . suffix . '' . a:node.badge
+    return a:options.root_symbol . a:node.label . suffix . '' . a:node.badge
   endif
   let leading = repeat(a:options.leading, level - 1)
   let symbol = s:get_node_symbol(a:node)
@@ -68,20 +72,21 @@ endfunction
 
 function! s:get_node_symbol(node) abort
   if a:node.status is# s:STATUS_NONE
-    let symbol = luaeval("require'nvim-web-devicons'.get_icon(_A[1],_A[2])",[a:node.label, fnamemodify(a:node.bufname, ":e")])
-    if symbol == 'null'
-      let symbol = ''
-    endif
+    let symbol = a:options.leaf_symbol . luaeval("require'nvim-web-devicons'.get_icon(_A[1],_A[2])",[a:node.label, fnamemodify(a:node.bufname, ":e")])
   elseif a:node.status is# s:STATUS_COLLAPSED
-    let symbol = ''
+    let symbol = a:options.collapsed_symbol . ''
   else
-    let symbol = ''
+    let symbol = a:options.expanded_symbol . ''
   endif
   return symbol . ' '
 endfunction
 
 call s:Config.config(expand('<sfile>:p'), {
       \ 'leading': ' ',
+      \ 'root_symbol': '',
+      \ 'leaf_symbol': '|  ',
+      \ 'collapsed_symbol': '|+ ',
+      \ 'expanded_symbol': '|- ',
       \ 'marked_symbol': '✓  ',
       \ 'unmarked_symbol': '   ',
       \})
