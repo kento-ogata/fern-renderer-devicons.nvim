@@ -84,6 +84,9 @@ endfunction
 function! s:get_node_symbol(node, options) abort
   if a:node.status is# s:STATUS_NONE
     let symbol = a:options.leaf_symbol . luaeval("require'nvim-web-devicons'.get_icon(_A[1], _A[2], { default = true })",[a:node.label, fnamemodify(a:node.bufname, ":e")])
+    if symbol == 'null'
+      let symbol = ''
+    endif
   elseif a:node.status is# s:STATUS_COLLAPSED
     let symbol = a:options.collapsed_symbol . ''
   else
@@ -93,11 +96,9 @@ function! s:get_node_symbol(node, options) abort
 endfunction
 
 call s:Config.config(expand('<sfile>:p'), {
-      \ 'leading': ' ',
+      \ 'leading': "│ ",
       \ 'root_symbol': '',
-      \ 'leaf_symbol': '|  ',
-      \ 'collapsed_symbol': '|+ ',
-      \ 'expanded_symbol': '|- ',
-      \ 'marked_symbol': '✓  ',
-      \ 'unmarked_symbol': '   ',
+      \ 'leaf_symbol': '',
+      \ 'collapsed_symbol': '',
+      \ 'expanded_symbol': '',
       \})
